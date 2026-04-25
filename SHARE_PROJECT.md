@@ -11,7 +11,7 @@ This is the best way to share the project if your team wants to collaborate and 
 1. **Initialize Git**: If you haven't already, open a terminal inside the `hackathon-ui` folder and run `git init`.
 2. **Commit the Code**: Run `git add .` followed by `git commit -m "Initial commit"`. Ensure you have a `.gitignore` file that ignores the `node_modules` folders.
 3. **Create the Repo**: Go to [GitHub](https://github.com/), create a New Repository, and ensure it is set to **Private**.
-4. **Push your Code**: Follow the GitHub instructions to push the code (e.g., `git remote add origin <URL>` and `git push -u origin main`).
+4. **Push your Code**: Because Git sometimes defaults to `master`, rename your branch locally first: run `git branch -M main`, then push to the repository with `git remote add origin <URL>` and `git push -u origin main`.
 5. **Invite the Team**: Go to your repository **Settings** > **Collaborators** and invite your teammates using their GitHub usernames.
 
 ### Method 2: Share via ZIP File (WhatsApp / Google Drive)
