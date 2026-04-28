@@ -111,7 +111,7 @@ export default function Login() {
 
             <div>
               <label className="form-label">{isLogin ? 'Username or Email' : 'Username'}</label>
-              <input type="text" className="form-input" placeholder={isLogin ? "demo / desaivraj73@gmail.com" : "username"} value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))} />
+              <input type="text" className="form-input" placeholder={isLogin ? "demo / demo@gmail.com" : "username"} value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))} />
             </div>
 
             <div>
