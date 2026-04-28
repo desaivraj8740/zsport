@@ -38,7 +38,7 @@ export default function AdminLayout({ children }) {
       <aside className="adm-sidebar">
         <div className="adm-logo">
           <span className="material-symbols-outlined" style={{ color: '#ff6b6b', fontSize: 22 }}>shield</span>
-          <span>SportShield</span>
+          <span>ZSport</span>
           <span className="adm-portal-tag">Admin</span>
         </div>
 
@@ -99,8 +99,8 @@ export default function AdminLayout({ children }) {
       </div>
 
       <style>{`
-        .adm-root { display: flex; min-height: 100vh; background: var(--bg); }
-        .adm-sidebar { width: 240px; flex-shrink: 0; background: #0a0a0c; border-right: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+        .adm-root { display: flex; min-height: 100vh; background: #0A0A0A; }
+        .adm-sidebar { width: 240px; flex-shrink: 0; background: #111111; border-right: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
         .adm-logo { display: flex; align-items: center; gap: 8px; padding: 20px 18px; font-family: var(--font-lexend); font-weight: 800; font-size: 16px; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.06); }
         .adm-portal-tag { font-size: 9px; font-weight: 800; letter-spacing: 0.1em; background: rgba(255,107,107,0.12); color: #ff6b6b; border: 1px solid rgba(255,107,107,0.2); padding: 2px 7px; border-radius: 4px; text-transform: uppercase; }
         .adm-user-card { display: flex; align-items: center; gap: 10px; margin: 14px 12px; padding: 12px; border-radius: 10px; border: 1px solid; background: rgba(255,255,255,0.02); }

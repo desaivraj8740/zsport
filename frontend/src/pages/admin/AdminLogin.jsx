@@ -55,7 +55,7 @@ export default function AdminLogin() {
       {/* Logo */}
       <div className="admin-login-logo">
         <span className="material-symbols-outlined" style={{ fontSize: 28, color: 'var(--primary-dim)' }}>shield</span>
-        <span style={{ fontFamily: 'var(--font-lexend)', fontWeight: 800, fontSize: 20, color: '#fff' }}>SportShield</span>
+        <span style={{ fontFamily: 'var(--font-lexend)', fontWeight: 800, fontSize: 20, color: '#fff' }}>ZSport</span>
         <div className="admin-badge">Admin Portal</div>
       </div>
 

@@ -5,10 +5,10 @@ import Sidebar from '../components/Sidebar'
 import Footer from '../components/Footer'
 
 const stats = [
-  { label: 'Active Threats', value: '02', sub: 'High Severity', subColor: 'var(--error)' },
-  { label: 'Login Attempts', value: '148', sub: '+12% vs Yesterday', subColor: 'var(--secondary-container)' },
-  { label: 'Integrity Score', value: '98.4%', sub: 'Optimal', subColor: 'rgba(255,255,255,0.35)', valColor: 'var(--primary-dim)' },
-  { label: 'CDN Nodes', value: '24/24', sub: 'All operational', subColor: 'var(--secondary-container)', valColor: '#fff' },
+  { label: 'Active Threats', value: '02', sub: 'High Severity', subColor: '#fff' },
+  { label: 'Login Attempts', value: '148', sub: '+12% vs Yesterday', subColor: '#fff' },
+  { label: 'Integrity Score', value: '98.4%', sub: 'Optimal', subColor: 'rgba(255,255,255,0.6)', valColor: '#fff' },
+  { label: 'CDN Nodes', value: '24/24', sub: 'All operational', subColor: '#fff', valColor: '#fff' },
 ]
 
 function SkeletonRect({ style }) { return <div className="skeleton" style={style} /> }
@@ -36,7 +36,7 @@ export default function Alerts() {
     : alerts
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div style={{ background: '#0A0A0A', minHeight: '100vh' }}>
       <Navbar />
       <Sidebar />
       <main className="main-content with-sidebar">
@@ -49,9 +49,9 @@ export default function Alerts() {
               <h1 className="headline-xl" style={{ color: '#fff' }}>Security Command Center</h1>
               <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 17, marginTop: 8 }}>Real-time threat monitoring and account integrity status.</p>
             </div>
-            <div className="glass" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 18px', borderRadius: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 18px', borderRadius: 12, background: 'rgba(37,99,235,0.25)', border: '1px solid rgba(37,99,235,0.4)' }}>
               <span className="live-dot" />
-              <span style={{ color: 'var(--secondary)', fontWeight: 700, fontSize: 12, letterSpacing: '0.08em' }}>SYSTEM ACTIVE</span>
+              <span style={{ color: '#fff', fontWeight: 800, fontSize: 12, letterSpacing: '0.08em' }}>SYSTEM ACTIVE</span>
             </div>
           </motion.div>
 
@@ -60,9 +60,8 @@ export default function Alerts() {
             {loading
               ? Array(4).fill(0).map((_, i) => <SkeletonRect key={i} style={{ borderRadius: 14, height: 110 }} />)
               : stats.map((s, i) => (
-                <motion.div key={s.label} className="glass glow al-stat-card"
-                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}
-                  whileHover={{ y: -4 }}>
+                <motion.div key={s.label} className={`bento${i % 2 === 1 ? ' bento-accent' : ''} glow al-stat-card`}
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}>
                   <div className="metadata" style={{ color: 'rgba(255,255,255,0.35)', marginBottom: 8 }}>{s.label}</div>
                   <div style={{ fontSize: 34, fontWeight: 900, color: s.valColor || '#fff', fontFamily: 'var(--font-lexend)' }}>{s.value}</div>
                   <div className="metadata" style={{ color: s.subColor, marginTop: 7 }}>{s.sub}</div>
@@ -72,7 +71,7 @@ export default function Alerts() {
           </div>
 
           {/* Table */}
-          <motion.div className="glass al-table-wrap" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          <motion.div className="bento al-table-wrap" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <div className="al-table-header">
               <h2 className="headline-md" style={{ color: '#fff' }}>Recent Security Alerts</h2>
               <div style={{ position: 'relative' }}>
@@ -138,9 +137,9 @@ export default function Alerts() {
       </main>
 
       <style>{`
-        .al-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 32px; }
-        .al-stat-card { padding: 22px; border-radius: 14px; transition: transform 0.22s; }
-        .al-table-wrap { border-radius: 18px; overflow: hidden; }
+        .al-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+        .al-stat-card { padding: 22px; border-radius: 16px; }
+        .al-table-wrap { border-radius: 16px; overflow: hidden; }
         .al-table-header { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
         .al-table { width: 100%; border-collapse: collapse; }
         .al-th { padding: 11px 20px; text-align: left; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid rgba(255,255,255,0.05); white-space: nowrap; }

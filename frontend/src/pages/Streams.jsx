@@ -31,7 +31,7 @@ export default function Streams() {
   const feat = streams.length > 0 ? streams[0] : null
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div style={{ background: '#0A0A0A', minHeight: '100vh' }}>
       <Navbar />
       <Sidebar />
       <main className="main-content with-sidebar">

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import Hls from 'hls.js'
 import Navbar from '../components/Navbar'
 import Sidebar from '../components/Sidebar'
 import Footer from '../components/Footer'
@@ -17,12 +18,15 @@ export default function VideoPlayer() {
   const [playing, setPlaying] = useState(true)
   const [muted, setMuted] = useState(false)
   const [liked, setLiked] = useState(false)
+  const [likeCount, setLikeCount] = useState(14000)
   const [fullscreen, setFullscreen] = useState(false)
-  
+  const [buffering, setBuffering] = useState(false)
+
   // Custom Controls State
   const [progress, setProgress] = useState(0)
   const [currentTime, setCurrentTime] = useState('0:00')
   const [duration, setDuration] = useState('0:00')
+  const [showWarning, setShowWarning] = useState(false)
 
   const [videos, setVideos] = useState([])
   const [loading, setLoading] = useState(true)
@@ -77,6 +81,33 @@ export default function VideoPlayer() {
     }
   }
 
+  // Screen recording & App switching Protection
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.hidden || !document.hasFocus()) {
+        const v = videoRef.current
+        if (v && !v.paused) v.pause()
+        setPlaying(false)
+        setShowWarning(true)
+      } else {
+        setShowWarning(false)
+        const v = videoRef.current
+        if (v && v.paused) {
+          v.play().catch(err => console.log("Auto-resume blocked:", err))
+          setPlaying(true)
+        }
+      }
+    }
+
+    window.addEventListener('blur', handleVisibility)
+    document.addEventListener('visibilitychange', handleVisibility)
+
+    return () => {
+      window.removeEventListener('blur', handleVisibility)
+      document.removeEventListener('visibilitychange', handleVisibility)
+    }
+  }, [])
+
   const formatTime = (timeInSeconds) => {
     if (isNaN(timeInSeconds)) return '0:00';
     const m = Math.floor(timeInSeconds / 60);
@@ -116,32 +147,87 @@ export default function VideoPlayer() {
   const feat = videos.length > 0 ? videos[0] : null
   const recs = videos.slice(1, 5)
 
-  if (loading) return <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>Loading Player...</div>
-  if (!feat) return <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>No videos available.</div>
+  const safeUrl = !feat ? '' : (feat.url === '#' || !feat.url ? 'https://www.w3schools.com/html/mov_bbb.mp4' : feat.url)
 
-  const safeUrl = feat.url === '#' || !feat.url ? 'https://www.w3schools.com/html/mov_bbb.mp4' : (feat.url.startsWith('http') ? feat.url : `http://127.0.0.1:5000${feat.url}`)
+  // HLS DRM Init
+  useEffect(() => {
+    if (!videoRef.current || !safeUrl) return;
+    const v = videoRef.current;
+
+    // Check if it's an m3u8 file
+    if (safeUrl.endsWith('.m3u8')) {
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          xhrSetup: function (xhr, url) {
+            xhr.withCredentials = false; // Add real auth integration in prod
+          }
+        });
+        hls.loadSource(safeUrl);
+        hls.attachMedia(v);
+        return () => hls.destroy();
+      } else if (v.canPlayType('application/vnd.apple.mpegurl')) {
+        v.src = safeUrl;
+      }
+    }
+  }, [safeUrl]);
+
+  if (loading) return <div style={{ background: '#0A0A0A', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>Loading Player...</div>
+  if (!feat) return <div style={{ background: '#0A0A0A', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>No videos available.</div>
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div style={{ background: '#0A0A0A', minHeight: '100vh', userSelect: 'none' }}>
       <Navbar />
       <Sidebar />
       <main className="main-content with-sidebar">
         <div className="vp-layout">
           {/* Player column */}
           <div className="vp-main">
-            <motion.div className="vp-player glass" initial={{ opacity: 0, scale: 0.99 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.45 }}>
-              <video 
+            <motion.div className="vp-player glass" initial={{ opacity: 0, scale: 0.99 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.45 }} style={{ pointerEvents: showWarning ? 'none' : 'auto' }}>
+              <AnimatePresence>
+                {showWarning && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    style={{ position: 'absolute', inset: 0, background: '#000', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <div style={{ background: 'var(--primary-container)', color: '#fff', padding: '16px 20px', borderRadius: '10px', maxWidth: '320px', border: '1px solid var(--primary)', transform: 'rotate(-1.5deg)', boxShadow: '0 10px 25px rgba(0,0,0,0.5)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                        <span className="material-symbols-outlined" style={{ color: 'var(--error, #ff4c4c)' }}>warning</span>
+                        <h4 style={{ fontWeight: 800, margin: 0 }}>SECURITY WARNING</h4>
+                      </div>
+                      <p style={{ fontSize: 13, lineHeight: 1.5, margin: 0 }}>This app does not support to switch between any apps while watching this. You need to exit from this page to open any other apps.</p>
+                      <p style={{ fontSize: 10, color: '#fff', marginTop: 8, fontWeight: 700, opacity: 0.8 }}>DRM SCREEN RECORDING PROTECTION ACTIVE</p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Buffering Overlay */}
+              {buffering && (
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, background: 'rgba(0,0,0,0.25)', pointerEvents: 'none' }}>
+                  <div style={{ width: 56, height: 56, border: '4px solid rgba(255,255,255,0.15)', borderTopColor: 'var(--primary-dim)', borderRadius: '50%', animation: 'vp-spin 0.75s linear infinite' }} />
+                </div>
+              )}
+              <video
                 ref={videoRef}
-                src={safeUrl} 
-                className="vp-bg" 
-                autoPlay={playing} 
-                muted={muted} 
+                src={!safeUrl.endsWith('.m3u8') ? safeUrl : undefined}
+                className="vp-bg"
+                autoPlay={playing}
+                muted={muted}
+                playsInline
                 onClick={togglePlay}
                 onTimeUpdate={handleTimeUpdate}
                 onDurationChange={handleDurationChange}
                 onEnded={() => setPlaying(false)}
-                onPlay={() => setPlaying(true)}
+                onPlay={() => { setPlaying(true); setBuffering(false); }}
                 onPause={() => setPlaying(false)}
+                onWaiting={() => setBuffering(true)}
+                onStalled={() => setBuffering(true)}
+                onCanPlay={() => setBuffering(false)}
+                onPlaying={() => setBuffering(false)}
+                controlsList="nodownload"
+                onContextMenu={(e) => e.preventDefault()}
               />
               {/* Live badge */}
               {feat.isLive && (
@@ -158,7 +244,7 @@ export default function VideoPlayer() {
               <div className="vp-controls">
                 <div className="vp-seek" onClick={handleSeek} style={{ cursor: 'pointer', position: 'relative', height: '10px' }}>
                   <div className="vp-progress" style={{ width: `${progress}%`, pointerEvents: 'none', background: 'var(--primary)', height: '4px', borderRadius: '4px' }} />
-                  <div className="vp-thumb" style={{ left: `calc(${progress}% - 6px)`, pointerEvents: 'none', width: '12px', height: '12px', background: '#fff', borderRadius: '50%', position: 'absolute', top: '-4px', boxShadow: '0 0 10px rgba(0,219,233,0.5)' }} />
+                  <div className="vp-thumb" style={{ left: `calc(${progress}% - 6px)`, pointerEvents: 'none', width: '12px', height: '12px', background: '#fff', borderRadius: '50%', position: 'absolute', top: '-4px', boxShadow: '0 0 10px rgba(37,99,235,0.5)' }} />
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -189,7 +275,7 @@ export default function VideoPlayer() {
                 <div>
                   <h1 className="headline-lg" style={{ color: '#fff' }}>{feat.title}</h1>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, marginTop: 8, alignItems: 'center' }}>
-                    <span style={{ color: 'var(--primary-dim)', fontWeight: 700, fontSize: 13 }}>#{feat.category?.replace(/\s+/g,'')}</span>
+                    <span style={{ color: 'var(--primary-dim)', fontWeight: 700, fontSize: 13 }}>#{feat.category?.replace(/\s+/g, '')}</span>
                     <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: 12 }}>{feat.created_at ? new Date(feat.created_at).toLocaleDateString() : 'Just now'}</span>
                     {feat.isPremium && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(47,248,1,0.08)', border: '1px solid rgba(47,248,1,0.2)', padding: '3px 10px', borderRadius: 4 }}>
@@ -200,9 +286,9 @@ export default function VideoPlayer() {
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <button className="vp-action" onClick={() => setLiked(l => !l)} style={{ color: liked ? 'var(--primary-dim)' : undefined }}>
-                    <span className="material-symbols-outlined">thumb_up</span>
-                    {liked ? '14.1k' : '14k'}
+                  <button className="vp-action" onClick={() => { const next = !liked; setLiked(next); setLikeCount(c => next ? c + 1 : c - 1); }} style={{ color: liked ? 'var(--primary-dim)' : undefined, transition: 'color 0.2s, transform 0.15s', transform: liked ? 'scale(1.12)' : 'scale(1)' }}>
+                    <span className="material-symbols-outlined" style={{ fontVariationSettings: liked ? "'FILL' 1" : "'FILL' 0" }}>thumb_up</span>
+                    {likeCount >= 1000 ? (likeCount / 1000).toFixed(1) + 'k' : likeCount}
                   </button>
                   <button className="vp-action"><span className="material-symbols-outlined">share</span> Share</button>
                 </div>
@@ -215,7 +301,7 @@ export default function VideoPlayer() {
                   </div>
                   <div>
                     <div style={{ color: '#fff', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5 }}>
-                      {feat.uploader_name || 'SportShield Official'}
+                      {feat.uploader_name || 'ZSport Official'}
                       <span className="material-symbols-outlined" style={{ fontSize: 15, color: 'var(--primary-dim)' }}>verified</span>
                     </div>
                     <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12 }}>Platform Host</div>
@@ -279,6 +365,7 @@ export default function VideoPlayer() {
       </main>
 
       <style>{`
+        @keyframes vp-spin { to { transform: rotate(360deg); } }
         .vp-layout { display: grid; grid-template-columns: 1fr 360px; gap: 22px; padding: 20px var(--margin-safe) 0; max-width: 1560px; margin: 0 auto; }
         .vp-main { display: flex; flex-direction: column; gap: 14px; }
         .vp-player { position: relative; aspect-ratio: 16/9; border-radius: 18px; overflow: hidden; cursor: pointer; }

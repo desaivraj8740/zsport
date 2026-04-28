@@ -8,7 +8,7 @@ export default defineConfig({
     host: '::',   // IPv6 listen on all interfaces
     port: 6969,
     strictPort: true,
-    allowedHosts: ['ui.darkcipher.site'],
+    allowedHosts: ['gdg.desaivraj.site'],
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:5000',

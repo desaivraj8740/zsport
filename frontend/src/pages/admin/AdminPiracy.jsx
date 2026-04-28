@@ -19,17 +19,28 @@ export default function AdminPiracy() {
       .then(d => { if (d.success) setRecords(d.data || []) })
   }, [])
 
-  const updateStatus = async (id, status) => {
+  const updateStatus = async (id, status, videoId = null) => {
     await fetch(`/api/piracy/${id}/status`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status })
+      body: JSON.stringify({ status, videoId })
     })
     setRecords(prev => prev.map(r => r.id === id ? { ...r, status } : r))
   }
 
+  const detectPiracy = async () => {
+    const res = await fetch('/api/piracy/detect', { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      // Refresh
+      fetch('/api/piracy').then(r => r.json()).then(d => { if (d.success) setRecords(d.data || []) });
+    } else {
+      alert(data.message);
+    }
+  }
+
   const report = (id) => updateStatus(id, 'reported')
-  const takedown = (id) => updateStatus(id, 'taken_down')
+  const takedown = (id, videoId) => updateStatus(id, 'taken_down', videoId)
 
   const shown = filter === 'all' ? records : records.filter(r => r.status === filter)
 
@@ -41,13 +52,18 @@ export default function AdminPiracy() {
             <h1 className="headline-lg" style={{ color: '#fff' }}>Piracy Tracker</h1>
             <p style={{ color: 'rgba(255,255,255,0.4)', marginTop: 6 }}>Websites illegally streaming your exclusive content.</p>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             {['all', 'active', 'reported', 'taken_down'].map(s => (
               <button key={s} onClick={() => setFilter(s)} className={`filter-chip ${filter === s ? 'active' : ''}`}
                 style={{ fontSize: 11 }}>
                 {s === 'all' ? 'All' : statusMeta[s]?.label || s}
               </button>
             ))}
+            <div style={{ width: 1, height: 20, background: 'rgba(255,255,255,0.2)', margin: '0 8px' }} />
+            <button onClick={detectPiracy} className="btn-primary" style={{ padding: '6px 14px', fontSize: 12 }}>
+               <span className="material-symbols-outlined" style={{ fontSize: 14 }}>radar</span>
+               Scan Web
+            </button>
           </div>
         </div>
 
@@ -114,7 +130,7 @@ export default function AdminPiracy() {
                             </button>
                           )}
                           {r.status !== 'taken_down' && (
-                            <button onClick={() => takedown(r.id)} title="DMCA Takedown" style={{ background: 'rgba(255,107,107,0.1)', border: '1px solid rgba(255,107,107,0.2)', borderRadius: 7, padding: '5px 8px', cursor: 'pointer', color: '#ff6b6b', fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-inter)' }}>
+                            <button onClick={() => takedown(r.id, r.video_id)} title="DMCA Takedown" style={{ background: 'rgba(255,107,107,0.1)', border: '1px solid rgba(255,107,107,0.2)', borderRadius: 7, padding: '5px 8px', cursor: 'pointer', color: '#ff6b6b', fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-inter)' }}>
                               DMCA
                             </button>
                           )}

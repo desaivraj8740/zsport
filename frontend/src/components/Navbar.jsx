@@ -24,7 +24,11 @@ export default function Navbar({ transparent = false }) {
     <>
       <nav className="navbar" style={{ background: transparent && !scrolled ? 'transparent' : undefined }} data-scrolled={scrolled}>
         <div className="navbar-inner">
-          <Link to="/" className="nav-logo">SportShield</Link>
+
+          <Link to="/" className="nav-logo">
+            <img src="/logo.png" alt="ZSport Logo" className="logo-img" />
+            <span className="logo-text">ZSport</span>
+          </Link>
           <div className="nav-links desktop-only">
             {navLinks.map(l => (
               <Link key={l.path} to={l.path} className={`nav-link ${location.pathname === l.path ? 'active' : ''}`}>{l.label}</Link>
@@ -64,17 +68,38 @@ export default function Navbar({ transparent = false }) {
         }
         .navbar[data-scrolled="true"] { box-shadow: 0 4px 24px rgba(0,0,0,0.35); background: rgba(9,9,11,0.97) !important; }
         .navbar-inner { max-width: 1600px; margin: 0 auto; height: 100%; display: flex; align-items: center; gap: 28px; padding: 0 var(--margin-safe); }
-        .nav-logo { font-family: var(--font-lexend); font-size: 21px; font-weight: 800; font-style: italic; color: var(--primary-dim); text-decoration: none; letter-spacing: -0.02em; }
+        .nav-logo { font-family: var(--font-lexend); font-size: 21px; font-weight: 800; font-style: italic; color: #fff; text-decoration: none; letter-spacing: -0.02em; }
         .nav-links { display: flex; align-items: center; gap: 24px; }
         .nav-link { font-family: var(--font-lexend); font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; padding-bottom: 2px; }
         .nav-link:hover { color: #fff; }
-        .nav-link.active { color: var(--primary-dim); border-bottom: 2px solid var(--primary-dim); }
+        .nav-link.active { color: #fff; border-bottom: 2px solid var(--primary-dim); }
         .nav-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
         .mobile-nav { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 99; padding: 12px var(--margin-safe); display: flex; flex-direction: column; gap: 2px; border-bottom: 1px solid rgba(255,255,255,0.07); }
         .mobile-link { text-decoration: none; padding: 12px 14px; border-radius: 8px; color: rgba(255,255,255,0.6); font-family: var(--font-lexend); font-weight: 600; font-size: 15px; transition: color 0.2s, background 0.2s; }
-        .mobile-link:hover,.mobile-link.active { color: var(--primary-dim); background: rgba(0,219,233,0.05); }
+        .mobile-link:hover,.mobile-link.active { color: #fff; background: rgba(37,99,235,0.05); }
         @media (min-width: 769px) { .mobile-only { display: none !important; } }
         @media (max-width: 768px) { .desktop-only { display: none !important; } }
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.logo-img {
+  height: 100px;   /* fits navbar */
+  object-fit: contain;
+}
+
+/* Fix text alignment */
+.logo-text {
+  font-family: var(--font-lexend);
+  font-size: 18px;
+  font-weight: 800;
+  font-style: italic;
+  color: #fff;
+  line-height: 1;   /* important: removes vertical misalignment */
+}
       `}</style>
     </>
   )

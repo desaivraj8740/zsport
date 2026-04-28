@@ -71,8 +71,17 @@ CREATE TABLE IF NOT EXISTS piracy_records (
     url VARCHAR(255),
     severity ENUM('Medium', 'High', 'Critical'),
     status ENUM('active', 'reported', 'taken_down') DEFAULT 'active',
+    video_id INT,
     found_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Blockchain Hashes Table
+CREATE TABLE IF NOT EXISTS blockchain_hashes (
+    hash VARCHAR(255) PRIMARY KEY,
+    video_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 
 -- Clear existing data if re-running
 TRUNCATE TABLE users;

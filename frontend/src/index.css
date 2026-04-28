@@ -4,24 +4,24 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0d0d0e;
-  --surface: #131314;
-  --surface-dim: #0e0e0f;
-  --surface-low: #1c1b1c;
-  --surface-container: #201f20;
-  --surface-high: #2a2a2b;
-  --surface-highest: #353436;
-  --on-surface: #e5e2e3;
-  --on-surface-var: #b9cacb;
-  --outline-var: #3b494b;
+  --bg: #0A0A0A;
+  --surface: #111111;
+  --surface-dim: #0d0d0d;
+  --surface-low: #1A1A2E;
+  --surface-container: #1e1e32;
+  --surface-high: #252540;
+  --surface-highest: #2e2e4a;
+  --on-surface: #ffffff;
+  --on-surface-var: #ebebeb;
+  --outline-var: #2c3a4a;
 
-  /* Primary - Electric Cyan */
-  --primary: #dbfcff;
-  --primary-container: #00f0ff;
-  --primary-dim: #00dbe9;
-  --primary-fixed: #7df4ff;
-  --on-primary: #00363a;
-  --on-primary-container: #006970;
+  /* Primary - Navy Blue */
+  --primary: #e0f2fe;
+  --primary-container: #3b82f6;
+  --primary-dim: #2563eb;
+  --primary-fixed: #60a5fa;
+  --on-primary: #ffffff;
+  --on-primary-container: #1e3a8a;
 
   /* Secondary - Neon Green */
   --secondary: #d7ffc5;
@@ -60,22 +60,35 @@ body {
 
 /* Glass utilities */
 .glass {
-  background: rgba(20, 20, 22, 0.75);
+  background: #111111;
+  border: 1px solid rgba(255,255,255,0.07);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.08);
 }
 .glass-light {
-  background: rgba(255,255,255,0.04);
+  background: #1A1A2E;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(37,99,235,0.1);
+}
+
+/* Bento card base — applies design system everywhere */
+.bento {
+  background: #111111;
+  border-radius: 16px;
   border: 1px solid rgba(255,255,255,0.07);
+  transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), box-shadow 0.28s;
+}
+.bento:hover { transform: scale(1.02); box-shadow: 0 20px 50px rgba(0,0,0,0.55); }
+.bento-accent {
+  background: #1A1A2E;
+  border-color: rgba(37,99,235,0.12);
 }
 
 /* Glow */
-.glow { box-shadow: 0 0 15px -3px rgba(0, 219, 233, 0.25); }
-.glow:hover { box-shadow: 0 0 25px -1px rgba(0, 219, 233, 0.45); }
-.glow-strong { box-shadow: 0 0 40px -10px rgba(0, 219, 233, 0.35); }
+.glow { box-shadow: 0 0 15px -3px rgba(37, 99, 235, 0.2); }
+.glow:hover { box-shadow: 0 0 28px -1px rgba(37, 99, 235, 0.4); }
+.glow-strong { box-shadow: 0 0 40px -10px rgba(37, 99, 235, 0.3); }
 
 /* Animations */
 @keyframes shimmer {

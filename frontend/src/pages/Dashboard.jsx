@@ -36,7 +36,7 @@ export default function Dashboard() {
   const feat = videos.length > 0 ? videos[0] : null
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+    <div style={{ background: '#0A0A0A', minHeight: '100vh' }}>
       <Navbar />
       <Sidebar />
       <main className="main-content with-sidebar">
@@ -51,7 +51,7 @@ export default function Dashboard() {
                 <div className="db-hero-body">
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
                     {feat.isLive ? <div className="badge-live nowrap"><span className="live-dot" style={{ width: 7, height: 7 }} /> LIVE NOW</div> : null}
-                    <span style={{ color: 'var(--primary-dim)', fontFamily: 'var(--font-lexend)', fontWeight: 700, fontSize: 13 }}>{feat.category?feat.category.toUpperCase():'FEATURED EVENT'}</span>
+                    <span style={{ color: '#fff', fontFamily: 'var(--font-lexend)', fontWeight: 700, fontSize: 13, opacity: 0.8 }}>{feat.category?feat.category.toUpperCase():'FEATURED EVENT'}</span>
                   </div>
                   <h1 className="headline-xl" style={{ color: '#fff', marginBottom: 14 }}>{feat.title}</h1>
                   <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 15, lineHeight: 1.6, marginBottom: 24, maxWidth: 500 }}>
@@ -89,7 +89,7 @@ export default function Dashboard() {
         <div style={{ padding: '0 var(--margin-safe) 72px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
             <h2 className="headline-md" style={{ color: '#fff' }}>Recommended for You</h2>
-            <Link to="/streams" style={{ color: 'var(--primary-dim)', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>
+            <Link to="/streams" style={{ color: '#fff', fontSize: 13, fontWeight: 700, textDecoration: 'none', opacity: 0.8 }}>
               View All <span className="material-symbols-outlined" style={{ fontSize: 15, verticalAlign: 'middle' }}>arrow_forward</span>
             </Link>
           </div>
@@ -129,25 +129,24 @@ export default function Dashboard() {
       </main>
 
       <style>{`
-        .db-hero { position: relative; height: 480px; border-radius: 24px; overflow: hidden; cursor: pointer; }
+        .db-hero { position: relative; height: 480px; border-radius: 16px; overflow: hidden; cursor: pointer; }
         .db-hero-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; }
         .db-hero:hover .db-hero-img { transform: scale(1.04); }
         .db-hero-grad { position: absolute; inset: 0; background: linear-gradient(to top, rgba(9,9,11,0.96) 25%, rgba(9,9,11,0.1) 65%, transparent); }
         .db-hero-body { position: absolute; bottom: 0; left: 0; padding: 44px; max-width: 65%; }
         .nowrap { white-space: nowrap; }
         .leagues-scroll { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 6px; }
-        .league-card { display: block; flex-shrink: 0; width: 180px; aspect-ratio: 3/4; border-radius: 14px; overflow: hidden; position: relative; text-decoration: none; transition: transform 0.3s; border: 1px solid rgba(255,255,255,0.04); }
+        .league-card { display: block; flex-shrink: 0; width: 180px; aspect-ratio: 3/4; border-radius: 16px; overflow: hidden; position: relative; text-decoration: none; transition: transform 0.3s; border: 1px solid rgba(255,255,255,0.06); background: #111111; }
         .league-card:hover { transform: scale(1.04); }
         .league-card:hover .league-img { transform: scale(1.1); }
         .league-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .league-grad { position: absolute; inset: 0; background: linear-gradient(to top, rgba(9,9,11,0.88) 25%, transparent); }
         .league-name { position: absolute; bottom: 12px; left: 12px; color: #fff; font-family: var(--font-lexend); font-size: 13px; font-weight: 700; }
-        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 22px; }
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
         .vcard { cursor: pointer; }
-        .vcard-thumb { position: relative; aspect-ratio: 16/9; border-radius: 11px; overflow: hidden; border: 1px solid rgba(255,255,255,0.07); margin-bottom: 10px; }
-        .vcard:hover .vcard-thumb { box-shadow: 0 0 20px rgba(0,219,233,0.2); }
+        .vcard-thumb { position: relative; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 10px; background: #111111; }
+        .vcard:hover .vcard-thumb { box-shadow: 0 0 20px rgba(0,219,233,0.18); transform: scale(1.02); }
         .vcard-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-        .vcard:hover .vcard-img { transform: scale(1.06); }
         .vcard-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.38); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.22s; color: #fff; }
         .vcard:hover .vcard-overlay { opacity: 1; }
         .vcard-title { color: #fff; font-size: 13px; font-weight: 700; line-height: 1.4; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; transition: color 0.2s; }

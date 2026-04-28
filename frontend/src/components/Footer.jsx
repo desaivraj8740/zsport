@@ -7,8 +7,8 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-inner">
         <div className="footer-brand">
-          <span className="footer-logo">SportShield</span>
-          <p className="footer-copy">© 2024 SportShield. All Rights Reserved.</p>
+          <span className="footer-logo">ZSport</span>
+          <p className="footer-copy">© 2025 ZSport. All Rights Reserved.</p>
         </div>
         <div className="footer-links">
           {footerLinks.map(l => (
