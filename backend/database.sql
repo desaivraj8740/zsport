@@ -95,7 +95,7 @@ TRUNCATE TABLE piracy_records;
 
 -- Standard demo user
 INSERT INTO users (username, email, password) VALUES 
-('demo', 'desaivraj73@gmail.com', 'demo@123');
+('demo', 'demo@gmail.com', 'demo@123');
 
 -- Admin users
 INSERT INTO admins (name, username, email, password, role) VALUES 
